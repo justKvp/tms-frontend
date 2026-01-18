@@ -9,6 +9,14 @@
     <p>Управление тегами для задач</p>
   </div>
 
+  <!-- Отладочная информация -->
+  <div style="background: #f0f0f0; padding: 10px; margin: 20px 0; border-radius: 5px;">
+    <h4>Отладка:</h4>
+    <p>Статус загрузки: {{ isLoading ? 'Загрузка...' : 'Загружено' }}</p>
+    <p>Тегов загружено: {{ tags.length }}</p>
+    <p>Фильтровано тегов: {{ filteredTags.length }}</p>
+  </div>
+
   <!-- Filters -->
   <div class="filters-section">
     <div class="search-box">
@@ -26,25 +34,35 @@
     </div>
   }
 
+  <!-- Error State -->
+  @if (hasError && !isLoading) {
+    <div class="error">
+      <p>Ошибка загрузки тегов. Проверьте подключение к серверу.</p>
+      <button (click)="loadTags()" class="habr-btn habr-btn-primary">
+        Попробовать снова
+      </button>
+    </div>
+  }
+
   <!-- Tags Grid -->
-  <div class="tags-grid">
-    @for (tag of filteredTags; track tag.id) {
-      <div class="tag-card">
-        <div class="tag-header">
-          <div class="tag-name">{{ tag.name }}</div>
-          <div class="tag-actions">
-            <button class="icon-btn" title="Редактировать">✏️</button>
-            <button class="icon-btn danger"
-                    title="Удалить"
-                    (click)="deleteTag(tag.id)">🗑️</button>
+  @if (!isLoading && !hasError) {
+    <div class="tags-grid">
+      @for (tag of filteredTags; track tag.id) {
+        <div class="tag-card">
+          <div class="tag-header">
+            <div class="tag-name">{{ tag.name }}</div>
+            <div class="tag-actions">
+              <button class="icon-btn" title="Редактировать">✏️</button>
+              <button class="icon-btn danger"
+                      title="Удалить"
+                      (click)="deleteTag(tag.id)">🗑️</button>
+            </div>
+          </div>
+          <div class="tag-footer">
+            <small>ID: {{ tag.id }}</small>
           </div>
         </div>
-        <div class="tag-footer">
-          <small>ID: {{ tag.id }}</small>
-        </div>
-      </div>
-    } @empty {
-      @if (!isLoading) {
+      } @empty {
         <div class="empty-state">
           <p>Теги не найдены</p>
           <button [routerLink]="['/tags/create']" class="habr-btn habr-btn-primary">
@@ -52,6 +70,6 @@
           </button>
         </div>
       }
-    }
-  </div>
+    </div>
+  }
 </div>

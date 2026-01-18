@@ -46,7 +46,18 @@ export class UserCreateComponent {
       return;
     }
 
-    this.apiService.createUser(this.user).subscribe({
+    // Подготавливаем данные для отправки
+    const userData = {
+      username: this.user.username,
+      email: this.user.email,
+      password: this.user.password,
+      fullName: this.user.fullName,
+      role: this.user.role
+    };
+
+    console.log('Creating user:', userData);
+
+    this.apiService.createUser(userData).subscribe({
       next: () => {
         this.notificationService.showSuccess('Пользователь создан');
         this.router.navigate(['/users']);

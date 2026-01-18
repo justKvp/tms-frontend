@@ -30,6 +30,8 @@ export class TagCreateComponent {
       return;
     }
 
+    console.log('Creating tag:', this.tag);
+
     this.apiService.createTag(this.tag).subscribe({
       next: () => {
         this.notificationService.showSuccess('Тег создан');

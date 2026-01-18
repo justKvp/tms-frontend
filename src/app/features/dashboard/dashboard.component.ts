@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,68 +25,106 @@ export class DashboardComponent implements OnInit {
   recentTasks: TaskResponse[] = [];
   recentProjects: ProjectResponse[] = [];
   isLoading = false;
+  hasError = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+    console.log('DashboardComponent initialized');
     this.loadStats();
   }
 
   loadStats(): void {
     this.isLoading = true;
+    this.hasError = false;
 
+    let loadedCount = 0;
+    const totalCalls = 3;
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === totalCalls) {
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Принудительно запускаем обнаружение изменений
+        console.log('All stats loaded:', this.stats);
+      }
+    };
+
+    // Загружаем проекты
     this.apiService.getProjects().subscribe({
-      next: (projects) => {
+      next: (projects: ProjectResponse[]) => {
+        console.log('Projects loaded:', projects);
         this.stats.projects = projects.length;
         this.recentProjects = projects.slice(0, 5);
+        checkAllLoaded();
       },
       error: (error) => {
         console.error('Ошибка загрузки проектов:', error);
+        this.hasError = true;
+        checkAllLoaded();
       }
     });
 
+    // Загружаем задачи
     this.apiService.getTasks().subscribe({
-      next: (tasks) => {
+      next: (tasks: TaskResponse[]) => {
+        console.log('Tasks loaded:', tasks);
         this.stats.tasks = tasks.length;
-        this.stats.openTasks = tasks.filter((t: TaskResponse) => t.status === 'OPEN').length;
+        // Считаем открытые задачи (status: 'new' согласно вашим данным)
+        this.stats.openTasks = tasks.filter((t: TaskResponse) =>
+          t.status === 'new' || t.status === 'in_progress'
+        ).length;
         this.recentTasks = tasks.slice(0, 5);
+        checkAllLoaded();
       },
       error: (error) => {
         console.error('Ошибка загрузки задач:', error);
+        this.hasError = true;
+        checkAllLoaded();
       }
     });
 
+    // Загружаем пользователей
     this.apiService.getUsers().subscribe({
-      next: (users) => {
+      next: (users: UserResponse[]) => {
+        console.log('Users loaded:', users);
         this.stats.users = users.length;
-        this.isLoading = false;
+        checkAllLoaded();
       },
       error: (error) => {
         console.error('Ошибка загрузки пользователей:', error);
-        this.isLoading = false;
+        this.hasError = true;
+        checkAllLoaded();
       }
     });
   }
 
   getStatusColor(status: string): string {
     const colors: any = {
-      'OPEN': 'status-open',
-      'IN_PROGRESS': 'status-in_progress',
-      'RESOLVED': 'status-resolved',
-      'CLOSED': 'status-closed',
-      'ACTIVE': 'status-active',
-      'INACTIVE': 'status-inactive'
+      'new': 'status-open',
+      'in_progress': 'status-in_progress',
+      'done': 'status-resolved',
+      'closed': 'status-closed',
+      'active': 'status-active',
+      'inactive': 'status-inactive'
     };
     return colors[status] || 'status-inactive';
   }
 
   getPriorityColor(priority: string): string {
     const colors: any = {
-      'LOW': 'priority-low',
-      'MEDIUM': 'priority-medium',
-      'HIGH': 'priority-high',
-      'CRITICAL': 'priority-critical'
+      'low': 'priority-low',
+      'medium': 'priority-medium',
+      'high': 'priority-high',
+      'critical': 'priority-critical'
     };
     return colors[priority] || 'priority-medium';
+  }
+
+  refresh(): void {
+    this.loadStats();
   }
 }

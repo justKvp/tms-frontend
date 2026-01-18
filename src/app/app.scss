@@ -196,3 +196,25 @@ body {
   border-radius: 4px;
   margin: 16px 0;
 }
+
+/* Добавьте в конец app.scss для отладки */
+.debug-info {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  font-family: monospace;
+  font-size: 12px;
+
+  h5 {
+    margin: 0 0 5px 0;
+    color: #495057;
+  }
+
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+}

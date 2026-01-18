@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -18,30 +18,46 @@ export class TagListComponent implements OnInit {
   filteredTags: TagResponse[] = [];
   searchTerm = '';
   isLoading = false;
+  hasError = false;
 
   constructor(
     private apiService: ApiService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    console.log('TagListComponent initialized');
     this.loadTags();
   }
 
   loadTags(): void {
     this.isLoading = true;
+    this.hasError = false;
+
     this.apiService.getTags().subscribe({
-      next: (tags) => {
-        this.tags = tags;
-        this.filteredTags = tags;
+      next: (tags: any) => {
+        console.log('Tags loaded:', tags);
+        this.tags = this.transformTags(tags);
+        this.filteredTags = this.tags;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Ошибка загрузки тегов:', error);
         this.notificationService.showError('Не удалось загрузить теги');
+        this.hasError = true;
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  private transformTags(tags: any[]): TagResponse[] {
+    return tags.map(tag => ({
+      id: tag.id,
+      name: tag.name || ''
+    }));
   }
 
   filterTags(): void {

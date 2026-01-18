@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -19,31 +19,40 @@ export class TaskListComponent implements OnInit {
   searchTerm = '';
   statusFilter = '';
   isLoading = false;
+  hasError = false;
 
-  statuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
-  priorities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+  statuses = ['new', 'in_progress', 'done', 'closed'];
+  priorities = ['low', 'medium', 'high', 'critical'];
 
   constructor(
     private apiService: ApiService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    console.log('TaskListComponent initialized');
     this.loadTasks();
   }
 
   loadTasks(): void {
     this.isLoading = true;
+    this.hasError = false;
+
     this.apiService.getTasks().subscribe({
       next: (tasks) => {
+        console.log('Tasks loaded:', tasks);
         this.tasks = tasks;
         this.filteredTasks = tasks;
         this.isLoading = false;
+        this.cdr.detectChanges(); // Важно!
       },
       error: (error) => {
         console.error('Ошибка загрузки задач:', error);
         this.notificationService.showError('Не удалось загрузить задачи');
+        this.hasError = true;
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -74,20 +83,20 @@ export class TaskListComponent implements OnInit {
 
   getStatusColor(status: string): string {
     const colors: any = {
-      'OPEN': 'status-open',
-      'IN_PROGRESS': 'status-in_progress',
-      'RESOLVED': 'status-resolved',
-      'CLOSED': 'status-closed'
+      'new': 'status-open',
+      'in_progress': 'status-in_progress',
+      'done': 'status-resolved',
+      'closed': 'status-closed'
     };
     return colors[status] || 'status-closed';
   }
 
   getPriorityColor(priority: string): string {
     const colors: any = {
-      'LOW': 'priority-low',
-      'MEDIUM': 'priority-medium',
-      'HIGH': 'priority-high',
-      'CRITICAL': 'priority-critical'
+      'low': 'priority-low',
+      'medium': 'priority-medium',
+      'high': 'priority-high',
+      'critical': 'priority-critical'
     };
     return colors[priority] || 'priority-medium';
   }
