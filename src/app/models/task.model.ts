@@ -3,9 +3,9 @@ export interface TaskRequest {
   description: string;
   status: string;
   priority: string;
-  assigneeId: number; // правильно
-  projectId: number;  // правильно
-  dueDate: string;    // правильно
+  assigneeId: number | null;  // Может быть null
+  projectId: number;
+  dueDate: string | null;      // Может быть null
 }
 
 export interface TaskResponse {
@@ -14,9 +14,9 @@ export interface TaskResponse {
   description: string;
   status: string;
   priority: string;
-  assigneeId: number; // правильно
-  projectId: number;  // правильно
-  dueDate: string;    // правильно
-  createdAt: string;  // правильно
-  updatedAt: string;  // правильно
+  assigneeId: number | null;  // Может быть null
+  projectId: number;
+  dueDate: string | null;      // Может быть null
+  createdAt: string;
+  updatedAt: string;
 }

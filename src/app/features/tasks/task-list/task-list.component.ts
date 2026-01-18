@@ -40,12 +40,12 @@ export class TaskListComponent implements OnInit {
     this.hasError = false;
 
     this.apiService.getTasks().subscribe({
-      next: (tasks) => {
+      next: (tasks: any[]) => {
         console.log('Tasks loaded:', tasks);
-        this.tasks = tasks;
-        this.filteredTasks = tasks;
+        this.tasks = this.transformTasks(tasks);
+        this.filteredTasks = this.tasks;
         this.isLoading = false;
-        this.cdr.detectChanges(); // Важно!
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Ошибка загрузки задач:', error);
@@ -57,8 +57,23 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  private transformTasks(tasks: any[]): TaskResponse[] {
+    return tasks.map((task: any) => ({
+      id: task.id,
+      title: task.title || '',
+      description: task.description || '',
+      status: task.status || 'new',
+      priority: task.priority || 'medium',
+      assigneeId: task.assigneeId === 0 ? null : task.assigneeId,
+      projectId: task.projectId,
+      dueDate: task.dueDate || null,
+      createdAt: task.createdAt || task.created_at || new Date().toISOString(),
+      updatedAt: task.updatedAt || task.updated_at || new Date().toISOString()
+    }));
+  }
+
   filterTasks(): void {
-    this.filteredTasks = this.tasks.filter(task => {
+    this.filteredTasks = this.tasks.filter((task: TaskResponse) => {
       const matchesSearch = task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchesStatus = !this.statusFilter || task.status === this.statusFilter;
@@ -82,7 +97,7 @@ export class TaskListComponent implements OnInit {
   }
 
   getStatusColor(status: string): string {
-    const colors: any = {
+    const colors: Record<string, string> = {
       'new': 'status-open',
       'in_progress': 'status-in_progress',
       'done': 'status-resolved',
@@ -92,7 +107,7 @@ export class TaskListComponent implements OnInit {
   }
 
   getPriorityColor(priority: string): string {
-    const colors: any = {
+    const colors: Record<string, string> = {
       'low': 'priority-low',
       'medium': 'priority-medium',
       'high': 'priority-high',

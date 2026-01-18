@@ -38,33 +38,68 @@
       </div>
     </div>
 
-    <!-- Проект и исполнитель -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="project">Проект *</label>
-        <select id="project" [(ngModel)]="task.projectId" name="projectId" required>
-          <option value="">Выберите проект</option>
-          @for (project of projects; track project.id) {
-            <option [value]="project.id">{{ project.name }}</option>
-          }
-        </select>
-      </div>
+    <!-- Проект -->
+    <div class="form-group">
+      <label for="project">Проект *</label>
+      <select id="project" [(ngModel)]="task.projectId" name="projectId" required>
+        <option value="0">Выберите проект</option>
+        @for (project of projects; track project.id) {
+          <option [value]="project.id">{{ project.name }} (ID: {{ project.id }})</option>
+        }
+      </select>
+    </div>
 
-      <div class="form-group">
-        <label for="assignee">Исполнитель</label>
-        <select id="assignee" [(ngModel)]="task.assigneeId" name="assigneeId">
-          <option value="0">Не назначен</option>
-          @for (user of users; track user.id) {
-            <option [value]="user.id">{{ user.fullName }} ({{ user.username }})</option>
-          }
-        </select>
-      </div>
+    <!-- Исполнитель -->
+    <div class="form-group">
+      <label for="assignee">Исполнитель</label>
+      <select id="assignee"
+              [(ngModel)]="assigneeSelectValue"
+              name="assigneeId">
+        <option value="null">Не назначен</option>
+        @for (user of users; track user.id) {
+          <option [value]="user.id">{{ user.fullName || user.username }} (ID: {{ user.id }})</option>
+        }
+      </select>
     </div>
 
     <!-- Срок выполнения -->
     <div class="form-group">
       <label for="dueDate">Срок выполнения</label>
-      <input type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate">
+      <input type="datetime-local" id="dueDate"
+             [(ngModel)]="dueDateLocal"
+             name="dueDate">
+    </div>
+
+    <!-- Отладочная информация -->
+    <div style="background: #f0f0f0; padding: 10px; margin: 20px 0; border-radius: 5px;">
+      <h4>Информация о системе:</h4>
+      <p><strong>Пользователей в системе:</strong> {{ users.length }}</p>
+      <p><strong>Проектов в системе:</strong> {{ projects.length }}</p>
+
+      <h4 style="margin-top: 15px;">Выбранные значения:</h4>
+      <p><strong>Заголовок:</strong> {{ task.title }}</p>
+      <p><strong>Проект ID:</strong> {{ task.projectId }}</p>
+      <p><strong>Исполнитель ID:</strong> {{ task.assigneeId === null ? 'null' : task.assigneeId }}</p>
+      <p><strong>Срок:</strong> {{ task.dueDate || 'null' }}</p>
+
+      @if (task.projectId > 0) {
+        <h4 style="margin-top: 15px;">Проверка проекта:</h4>
+
+        <!-- Получаем выбранный проект -->
+        @let selectedProject = getSelectedProject();
+
+        @if (selectedProject) {
+          <p style="color: green;"><strong>✓ Проект найден: {{ selectedProject.name }} (ID: {{ selectedProject.id }})</strong></p>
+        } @else {
+          <p style="color: red;"><strong>✗ Проект не найден!</strong></p>
+          <p><strong>Доступные проекты:</strong></p>
+          <ul>
+            @for (project of projects; track project.id) {
+              <li>ID: {{ project.id }}, Название: {{ project.name }}</li>
+            }
+          </ul>
+        }
+      }
     </div>
 
     <!-- Кнопки -->
