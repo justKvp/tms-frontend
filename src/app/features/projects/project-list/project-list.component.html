@@ -1,0 +1,95 @@
+<div class="habr-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Проекты</h1>
+      <button [routerLink]="['/projects/create']" class="habr-btn habr-btn-primary">
+        + Новый проект
+      </button>
+    </div>
+    <p>Управление проектами и их задачами</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text"
+             [(ngModel)]="searchTerm"
+             (ngModelChange)="filterProjects()"
+             placeholder="Поиск проектов...">
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn"
+              [class.active]="!statusFilter"
+              (click)="statusFilter = ''; filterProjects()">
+        Все
+      </button>
+      @for (status of statuses; track status) {
+        <button class="filter-btn"
+                [class.active]="statusFilter === status"
+                (click)="statusFilter = status; filterProjects()">
+          {{ status }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading">
+      <p>Загрузка проектов...</p>
+    </div>
+  }
+
+  <!-- Projects Grid -->
+  <div class="projects-grid">
+    @for (project of filteredProjects; track project.id) {
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-status" [class]="getStatusColor(project.status)">
+            {{ project.status }}
+          </span>
+          <div class="project-actions">
+            <button class="icon-btn" title="Редактировать">
+              ✏️
+            </button>
+            <button class="icon-btn danger"
+                    title="Удалить"
+                    (click)="deleteProject(project.id)">
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <h3 class="project-title">{{ project.name }}</h3>
+        <p class="project-description">{{ project.description || 'Нет описания' }}</p>
+
+        <div class="project-meta">
+          <div class="meta-item">
+            <span class="meta-label">Создан:</span>
+            <span class="meta-value">{{ project.createdAt | date: 'dd.MM.yyyy' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Обновлен:</span>
+            <span class="meta-value">{{ project.updatedAt | date: 'dd.MM.yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="project-footer">
+          <button class="habr-btn habr-btn-secondary">
+            Перейти к задачам →
+          </button>
+        </div>
+      </div>
+    } @empty {
+      @if (!isLoading) {
+        <div class="empty-state">
+          <p>Проекты не найдены</p>
+          <button [routerLink]="['/projects/create']" class="habr-btn habr-btn-primary">
+            Создать первый проект
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

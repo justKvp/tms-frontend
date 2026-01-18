@@ -1,0 +1,36 @@
+<div class="habr-container">
+  <div class="page-header">
+    <h1>Создание проекта</h1>
+    <p>Заполните форму для создания нового проекта</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="habr-form">
+    <!-- Название -->
+    <div class="form-group">
+      <label for="name">Название проекта *</label>
+      <input type="text" id="name" [(ngModel)]="project.name" name="name" required>
+    </div>
+
+    <!-- Описание -->
+    <div class="form-group">
+      <label for="description">Описание</label>
+      <textarea id="description" [(ngModel)]="project.description" name="description" rows="4"></textarea>
+    </div>
+
+    <!-- Статус -->
+    <div class="form-group">
+      <label for="status">Статус</label>
+      <select id="status" [(ngModel)]="project.status" name="status">
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="form-actions">
+      <button type="button" class="habr-btn habr-btn-secondary" (click)="onCancel()">Отмена</button>
+      <button type="submit" class="habr-btn habr-btn-primary">Создать проект</button>
+    </div>
+  </form>
+</div>

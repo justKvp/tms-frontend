@@ -1,0 +1,57 @@
+<div class="habr-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Теги</h1>
+      <button [routerLink]="['/tags/create']" class="habr-btn habr-btn-primary">
+        + Новый тег
+      </button>
+    </div>
+    <p>Управление тегами для задач</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text"
+             [(ngModel)]="searchTerm"
+             (ngModelChange)="filterTags()"
+             placeholder="Поиск тегов...">
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading">
+      <p>Загрузка тегов...</p>
+    </div>
+  }
+
+  <!-- Tags Grid -->
+  <div class="tags-grid">
+    @for (tag of filteredTags; track tag.id) {
+      <div class="tag-card">
+        <div class="tag-header">
+          <div class="tag-name">{{ tag.name }}</div>
+          <div class="tag-actions">
+            <button class="icon-btn" title="Редактировать">✏️</button>
+            <button class="icon-btn danger"
+                    title="Удалить"
+                    (click)="deleteTag(tag.id)">🗑️</button>
+          </div>
+        </div>
+        <div class="tag-footer">
+          <small>ID: {{ tag.id }}</small>
+        </div>
+      </div>
+    } @empty {
+      @if (!isLoading) {
+        <div class="empty-state">
+          <p>Теги не найдены</p>
+          <button [routerLink]="['/tags/create']" class="habr-btn habr-btn-primary">
+            Создать первый тег
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

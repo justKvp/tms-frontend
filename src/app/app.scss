@@ -1,0 +1,198 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: #f8f9fa;
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+/* Habr-like Container */
+.habr-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styles */
+.habr-header {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .logo-tms {
+      color: #2c3e50;
+    }
+
+    .logo-hub {
+      color: #3498db;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 24px;
+
+    a {
+      color: #2c3e50;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+
+      &.active {
+        color: #3498db;
+        background-color: #e3f2fd;
+      }
+    }
+  }
+
+  .user-menu {
+    .user-btn {
+      background: none;
+      border: 1px solid #e0e0e0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+
+      .user-avatar {
+        font-size: 16px;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* Main Content */
+.habr-main {
+  min-height: calc(100vh - 130px);
+  padding: 30px 0;
+}
+
+/* Footer Styles */
+.habr-footer {
+  background: #2c3e50;
+  color: #fff;
+  padding: 30px 0;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p {
+      margin: 0;
+      color: #bdc3c7;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+
+      a {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-size: 14px;
+
+        &:hover {
+          color: #3498db;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+/* Utility Classes */
+.habr-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &-primary {
+    background: #3498db;
+    color: white;
+
+    &:hover {
+      background: #2980b9;
+    }
+  }
+
+  &-secondary {
+    background: #95a5a6;
+    color: white;
+
+    &:hover {
+      background: #7f8c8d;
+    }
+  }
+
+  &-danger {
+    background: #e74c3c;
+    color: white;
+
+    &:hover {
+      background: #c0392b;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+}
+
+.error {
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  padding: 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+}

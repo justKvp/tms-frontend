@@ -1,0 +1,50 @@
+<div class="habr-container">
+  <div class="page-header">
+    <h1>Создание пользователя</h1>
+    <p>Заполните форму для создания нового пользователя</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="habr-form">
+    <!-- Имя пользователя и email -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="username">Имя пользователя *</label>
+        <input type="text" id="username" [(ngModel)]="user.username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" [(ngModel)]="user.email" name="email" required>
+      </div>
+    </div>
+
+    <!-- Полное имя -->
+    <div class="form-group">
+      <label for="fullName">Полное имя</label>
+      <input type="text" id="fullName" [(ngModel)]="user.fullName" name="fullName">
+    </div>
+
+    <!-- Пароль и роль -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="password">Пароль *</label>
+        <input type="password" id="password" [(ngModel)]="user.password" name="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Роль</label>
+        <select id="role" [(ngModel)]="user.role" name="role">
+          @for (role of roles; track role) {
+            <option [value]="role">{{ role }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="form-actions">
+      <button type="button" class="habr-btn habr-btn-secondary" (click)="onCancel()">Отмена</button>
+      <button type="submit" class="habr-btn habr-btn-primary">Создать пользователя</button>
+    </div>
+  </form>
+</div>

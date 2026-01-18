@@ -1,0 +1,76 @@
+<div class="habr-container">
+  <div class="page-header">
+    <h1>Создание задачи</h1>
+    <p>Заполните форму для создания новой задачи</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="habr-form">
+    <!-- Заголовок -->
+    <div class="form-group">
+      <label for="title">Заголовок *</label>
+      <input type="text" id="title" [(ngModel)]="task.title" name="title" required>
+    </div>
+
+    <!-- Описание -->
+    <div class="form-group">
+      <label for="description">Описание</label>
+      <textarea id="description" [(ngModel)]="task.description" name="description" rows="4"></textarea>
+    </div>
+
+    <!-- Статус и приоритет -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="status">Статус</label>
+        <select id="status" [(ngModel)]="task.status" name="status">
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Приоритет</label>
+        <select id="priority" [(ngModel)]="task.priority" name="priority">
+          @for (priority of priorities; track priority) {
+            <option [value]="priority">{{ priority }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Проект и исполнитель -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="project">Проект *</label>
+        <select id="project" [(ngModel)]="task.projectId" name="projectId" required>
+          <option value="">Выберите проект</option>
+          @for (project of projects; track project.id) {
+            <option [value]="project.id">{{ project.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="assignee">Исполнитель</label>
+        <select id="assignee" [(ngModel)]="task.assigneeId" name="assigneeId">
+          <option value="0">Не назначен</option>
+          @for (user of users; track user.id) {
+            <option [value]="user.id">{{ user.fullName }} ({{ user.username }})</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Срок выполнения -->
+    <div class="form-group">
+      <label for="dueDate">Срок выполнения</label>
+      <input type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate">
+    </div>
+
+    <!-- Кнопки -->
+    <div class="form-actions">
+      <button type="button" class="habr-btn habr-btn-secondary" (click)="onCancel()">Отмена</button>
+      <button type="submit" class="habr-btn habr-btn-primary">Создать задачу</button>
+    </div>
+  </form>
+</div>

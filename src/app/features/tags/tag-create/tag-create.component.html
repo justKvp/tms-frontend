@@ -1,0 +1,20 @@
+<div class="habr-container">
+  <div class="page-header">
+    <h1>Создание тега</h1>
+    <p>Заполните форму для создания нового тега</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="habr-form">
+    <!-- Название -->
+    <div class="form-group">
+      <label for="name">Название тега *</label>
+      <input type="text" id="name" [(ngModel)]="tag.name" name="name" required>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="form-actions">
+      <button type="button" class="habr-btn habr-btn-secondary" (click)="onCancel()">Отмена</button>
+      <button type="submit" class="habr-btn habr-btn-primary">Создать тег</button>
+    </div>
+  </form>
+</div>

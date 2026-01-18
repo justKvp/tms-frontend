@@ -1,0 +1,97 @@
+<div class="habr-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Задачи</h1>
+      <button [routerLink]="['/tasks/create']" class="habr-btn habr-btn-primary">
+        + Новая задача
+      </button>
+    </div>
+    <p>Управление задачами и тикетами</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text"
+             [(ngModel)]="searchTerm"
+             (ngModelChange)="filterTasks()"
+             placeholder="Поиск задач...">
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn"
+              [class.active]="!statusFilter"
+              (click)="statusFilter = ''; filterTasks()">
+        Все
+      </button>
+      @for (status of statuses; track status) {
+        <button class="filter-btn"
+                [class.active]="statusFilter === status"
+                (click)="statusFilter = status; filterTasks()">
+          {{ status }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading">
+      <p>Загрузка задач...</p>
+    </div>
+  }
+
+  <!-- Tasks Grid -->
+  <div class="tasks-grid">
+    @for (task of filteredTasks; track task.id) {
+      <div class="task-card">
+        <div class="task-header">
+          <span class="task-status" [class]="getStatusColor(task.status)">
+            {{ task.status }}
+          </span>
+          <span class="task-priority" [class]="getPriorityColor(task.priority)">
+            {{ task.priority }}
+          </span>
+          <div class="task-actions">
+            <button class="icon-btn" title="Редактировать">
+              ✏️
+            </button>
+            <button class="icon-btn danger"
+                    title="Удалить"
+                    (click)="deleteTask(task.id)">
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <h3 class="task-title">{{ task.title }}</h3>
+        <p class="task-description">{{ task.description || 'Нет описания' }}</p>
+
+        <div class="task-meta">
+          <div class="meta-item">
+            <span class="meta-label">Исполнитель:</span>
+            <span class="meta-value">{{ task.assigneeId || 'Не назначен' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Срок:</span>
+            <span class="meta-value">{{ task.dueDate ? (task.dueDate | date: 'dd.MM.yyyy') : 'Не указан' }}</span>
+          </div>
+        </div>
+
+        <div class="task-footer">
+          <small>Создана: {{ task.createdAt | date: 'dd.MM.yyyy' }}</small>
+          <small>Обновлена: {{ task.updatedAt | date: 'dd.MM.yyyy' }}</small>
+        </div>
+      </div>
+    } @empty {
+      @if (!isLoading) {
+        <div class="empty-state">
+          <p>Задачи не найдены</p>
+          <button [routerLink]="['/tasks/create']" class="habr-btn habr-btn-primary">
+            Создать первую задачу
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>
